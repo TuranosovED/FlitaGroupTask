@@ -14,6 +14,16 @@ void PrintAbacus(int **mas,int width,int height)
     putchar('\n');
 }
 
+int Filelen()
+{
+    FILE *f = fopen("data.txt", "r");
+    int len=0;
+    int value;
+    while(fscanf(f, "%d", &value) != EOF)
+        len++;
+    return len;
+}
+
 int main()
 {
     int size = Filelen();
@@ -145,12 +155,11 @@ int main()
         mas[Cyclecounter++] = counter;
     }
 
-    for(int i =0;i<size;i++)
-        printf("%d: %d\n",i+1,mas[i]);
+    // for(int i =0;i<size;i++)
+    //     printf("%d: %d\n",i+1,mas[i]);
 
     long micros = (((end.tv_sec - start.tv_sec) * 1000000) + end.tv_usec) - (start.tv_usec);
-    
-    printf("\nThe elapsed time is %d micros\n", micros);
-
+    printf("Gravity: The elapsed time is %d micros", micros);
+    putchar('\n');
     return 0;
 }

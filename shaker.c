@@ -60,11 +60,12 @@ int main()
     
     gettimeofday(&end, NULL);
 
-    for(int i =0;i<size;i++)printf("%d: %d\n",i+1,mas[i]);
+    //for(int i =0;i<size;i++)
+    //    printf("%d: %d\n",i+1,mas[i]);
 
     long micros = (((end.tv_sec - start.tv_sec) * 1000000) + end.tv_usec) - (start.tv_usec);
-    
-    printf("\nThe elapsed time is %d micros\n", micros);
 
+    printf("Shaker: The elapsed time is %d micros", micros);
+    putchar('\n');
     return 0;
 }

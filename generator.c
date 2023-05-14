@@ -10,7 +10,7 @@ int main(int argc, char* argv[])
     if(argv[1] != NULL)
         CountOfNumbers = atoi(argv[1]);
     else
-        scanf("%d",CountOfNumbers);
+        scanf("%d",&CountOfNumbers);
     
     FILE *f = fopen("data.txt", "w+");
 
