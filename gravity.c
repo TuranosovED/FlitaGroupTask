@@ -1,8 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <unistd.h>
 #include <sys/time.h>
-
-#define SIZE 1000
 
 void PrintAbacus(int **mas,int width,int height)
 {
@@ -17,8 +16,9 @@ void PrintAbacus(int **mas,int width,int height)
 
 int main()
 {
+    int size = Filelen();
     struct timeval start, end;
-    int mas[SIZE];
+    int *mas = malloc(sizeof(int) *size);
     FILE *f = fopen("data.txt", "r");
     int value;
     int i = 0;
@@ -37,11 +37,11 @@ int main()
     int min = 214748364;
     int max = 0;
 
-    for (int i = 0; i < SIZE; i++) //определение минимального числа
+    for (int i = 0; i < size; i++) //определение минимального числа
         if (mas[i] < min)
             min = mas[i];
 
-    for (int i = 0; i < SIZE; i++) //определение максимального числа
+    for (int i = 0; i < size; i++) //определение максимального числа
         if (mas[i] > max)
             max = mas[i];
 
@@ -57,7 +57,7 @@ int main()
     int PossitiveCounter = 0; //счетчики под каждый из абаков
     int Negativecounter = 0;
 
-    for (int i = 0; i < SIZE; i++)     //заполнение счет
+    for (int i = 0; i < size; i++)     //заполнение счет
     {
         if(mas[i] >= 0)
         {
@@ -116,7 +116,6 @@ int main()
 
     //PrintAbacus(abacusNegative,abs(min),countOfNegative);
     //PrintAbacus(abacusPositive,max,countOfPositive);
-
     gettimeofday(&end, NULL);
 
     int counter;
@@ -146,13 +145,12 @@ int main()
         mas[Cyclecounter++] = counter;
     }
 
-    for(int i =0;i<SIZE;i++)
-        printf("%d ",mas[i]);
+    for(int i =0;i<size;i++)
+        printf("%d: %d\n",i+1,mas[i]);
 
-    long seconds = (end.tv_sec - start.tv_sec);
-    long micros = ((seconds * 1000000) + end.tv_usec) - (start.tv_usec);
-
-    printf("\nThe elapsed time is %d seconds and %d micros\n", seconds, micros);
+    long micros = (((end.tv_sec - start.tv_sec) * 1000000) + end.tv_usec) - (start.tv_usec);
+    
+    printf("\nThe elapsed time is %d micros\n", micros);
 
     return 0;
 }

@@ -2,14 +2,25 @@
 #include <stdio.h>
 #include <sys/time.h>
 
-#define SIZE 1000
 #define swap(a, b , type) type c = a; \
                           a = b;      \
                           b = c;
+
+int Filelen()
+{
+    FILE *f = fopen("data.txt", "r");
+    int len=0;
+    int value;
+    while(fscanf(f, "%d", &value) != EOF)
+        len++;
+    return len;
+}
+
 int main()
 {
     struct timeval start, end;
-    int mas[SIZE];
+    int size = Filelen();
+    int *mas = (int*)malloc(sizeof(int) * size);
     FILE *f = fopen("data.txt", "r");
     int value;
     int i = 0;
@@ -20,7 +31,7 @@ int main()
     fclose(f);
 
     int left = 0;
-    int right = SIZE - 1;
+    int right = size - 1;
     int buffer; //так как после первого прохода наиб элемент будет справа, а наим слева, то сужаем границы
 
     gettimeofday(&start, NULL);
@@ -46,15 +57,14 @@ int main()
         }
         left = buffer;
     }
-
+    
     gettimeofday(&end, NULL);
 
-    for(int i =0;i<SIZE;i++)printf("%d ",mas[i]);
+    for(int i =0;i<size;i++)printf("%d: %d\n",i+1,mas[i]);
 
-    long seconds = (end.tv_sec - start.tv_sec);
-    long micros = ((seconds * 1000000) + end.tv_usec) - (start.tv_usec);
-
-    printf("\nThe elapsed time is %d seconds and %d micros\n", seconds, micros);
+    long micros = (((end.tv_sec - start.tv_sec) * 1000000) + end.tv_usec) - (start.tv_usec);
+    
+    printf("\nThe elapsed time is %d micros\n", micros);
 
     return 0;
 }
