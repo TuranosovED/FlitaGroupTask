@@ -1,6 +1,5 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <unistd.h>
 #include <sys/time.h>
 
 void PrintAbacus(int **mas,int width,int height)
@@ -24,15 +23,33 @@ int Filelen()
     return len;
 }
 
+int MaxInMas(int *mas,int size)
+{
+    int max = 0;
+    for (int i = 0; i < size; i++) //определение максимального числа
+        if (mas[i] > max)
+            max = mas[i];
+    return max;
+}
+
+int MinInMas(int *mas, int size)
+{
+    int min = 214748364;
+    for (int i = 0; i < size; i++) //определение минимального числа
+        if (mas[i] < min)
+            min = mas[i];
+    return min;
+}
+
 int main()
 {
+
     int size = Filelen();
     struct timeval start, end;
     int *mas = malloc(sizeof(int) *size);
     FILE *f = fopen("data.txt", "r");
+    
     int value;
-    int i = 0;
-
     int countOfPositive = 0;
     int countOfNegative = 0;
 
@@ -43,18 +60,9 @@ int main()
         else countOfNegative++;
     }
 
-    fclose(f);
-    int min = 214748364;
-    int max = 0;
-
-    for (int i = 0; i < size; i++) //определение минимального числа
-        if (mas[i] < min)
-            min = mas[i];
-
-    for (int i = 0; i < size; i++) //определение максимального числа
-        if (mas[i] > max)
-            max = mas[i];
-
+    int max = MaxInMas(mas,size);
+    int min = MinInMas(mas,size);
+    
     int **abacusPositive = (int **)malloc(countOfPositive * sizeof(int *)); //выделение памяти под счеты
     int **abacusNegative = (int **)malloc(countOfNegative * sizeof(int *)); //выделение памяти под счеты
 
@@ -81,55 +89,68 @@ int main()
                 abacusNegative[Negativecounter][j] = 1;
             Negativecounter++;
         }
-    }   
-        
+    }    
+
     //PrintAbacus(abacusNegative,abs(min),countOfNegative);
+
+    int heightCounter;
+    gettimeofday(&start, NULL);
+
     //PrintAbacus(abacusPositive,max,countOfPositive);
-
-    gettimeofday(&start, NULL); //начало отсчета
-
-    for(int count = 0;count < countOfPositive-1;count++)
+    //PrintAbacus(abacusNegative,abs(min),countOfNegative);
+    
+    for(int j =0;j<max;j++)
     {
-        for(int i =0;i<max;i++)
+        heightCounter = 0;
+        for(int i =0;i<countOfPositive;i++) //считаем кол-во бусинок в столбце
         {
-            for(int j = countOfPositive-1;j>=0;j--)
+            if(abacusPositive[i][j] == 1)
             {
-                if(abacusPositive[j][i] != 0)
-                {
-                    if((j+1 < countOfPositive )&& (abacusPositive[j+1][i] == 0))
-                    {
-                        abacusPositive[j][i] = 0;
-                        abacusPositive[j+1][i] = 1;
-                    }
-                }
+                heightCounter++;
+                abacusPositive[i][j] = 0;
             }
+        }
+        for(int i =countOfPositive-1;i>=0;i--) //сортируем гравитацией
+        {
+            if(heightCounter>0)
+            {
+                abacusPositive[i][j]=1;
+                heightCounter--;
+            }
+            else break;
         }
     }
     
-    for(int count = 0;count < countOfNegative-1;count++)
+    for(int j =0;j<abs(min);j++)
     {
-        for(int i =0;i<abs(min);i++)
+        heightCounter = 0;
+         
+        for(int i =0;i<countOfNegative;i++) //считаем кол-во бусинок в столбце
         {
-            for(int j = countOfNegative-1;j>=0;j--)
+            if(abacusNegative[i][j] == 1)
             {
-                if(abacusNegative[j][i] != 0)
-                {
-                    if((j+1 < countOfNegative )&& (abacusNegative[j+1][i] == 0))
-                    {
-                        abacusNegative[j][i] = 0;
-                        abacusNegative[j+1][i] = 1;
-                    }
-                }
+                heightCounter++;
+                abacusNegative[i][j] = 0;
             }
         }
+        for(int i =countOfNegative-1;i>=0;i--) //сортируем гравитацией
+        {
+            if(heightCounter>0)
+            {
+                abacusNegative[i][j]=1;
+                heightCounter--;
+            }
+            else break;
+        }
+       
     }
-
-    //PrintAbacus(abacusNegative,abs(min),countOfNegative);
     //PrintAbacus(abacusPositive,max,countOfPositive);
+    //PrintAbacus(abacusNegative,abs(min),countOfNegative);
+    
     gettimeofday(&end, NULL);
 
+    heightCounter = 0;
     int counter;
-    int Cyclecounter = 0;
 
     for(int i = countOfNegative - 1;i>=0;i--)
     {
@@ -139,7 +160,7 @@ int main()
             if(abacusNegative[i][j] == 1)counter++;
             else break;
         }
-        mas[Cyclecounter++] = counter * (-1);
+        mas[heightCounter++] = counter * (-1);
     }
     
     counter = 0;
@@ -152,7 +173,7 @@ int main()
             if(abacusPositive[i][j] == 1)counter++;
             else break;
         }
-        mas[Cyclecounter++] = counter;
+        mas[heightCounter++] = counter;
     }
 
     // for(int i =0;i<size;i++)
@@ -161,5 +182,6 @@ int main()
     long micros = (((end.tv_sec - start.tv_sec) * 1000000) + end.tv_usec) - (start.tv_usec);
     printf("Gravity: The elapsed time is %d micros", micros);
     putchar('\n');
+
     return 0;
 }

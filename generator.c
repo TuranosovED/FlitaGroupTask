@@ -28,7 +28,7 @@ int main(int argc, char* argv[])
             MinusRandom = -1 + rand()%(1-(-1)+1);
         fprintf(f, "%d ", (0 + rand()%(10000 - 0 + 1)) * MinusRandom); //[1;10000]
     }
-        
+       
     fclose(f);
     return 0;
 }
