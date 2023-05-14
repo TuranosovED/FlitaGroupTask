@@ -3,21 +3,15 @@
 #include <math.h>
 #include <time.h>
 
-int main()
+int main(int argc, char* argv[])
 {
     srand(time(NULL));
     int CountOfNumbers;
-    int CountOfDigits;
-    int countOfZero;
-    puts("Enter count of numbers: ");
-    scanf("%d", &CountOfNumbers);
-
-    puts("Enter count of digits: ");
-    scanf("%d", &CountOfDigits);
-
-    puts("Enter count of Zero: ");
-    scanf("%d", &countOfZero);
-
+    if(argv[1] != NULL)
+        CountOfNumbers = atoi(argv[1]);
+    else
+        scanf("%d",CountOfNumbers);
+    
     FILE *f = fopen("data.txt", "w+");
 
     if (f == NULL)
@@ -30,13 +24,9 @@ int main()
     for (int i = 0; i < CountOfNumbers; i++)
     {
         MinusRandom = 0;
-        if(ZeroCounter >= countOfZero)
-        {
-            while(MinusRandom == 0)
-                MinusRandom = -1 + rand()%(1-(-1)+1);
-        }
-        else ZeroCounter++;
-        fprintf(f, "%d ", (rand() % ((int)pow(10, CountOfDigits))) * MinusRandom);
+        while(MinusRandom == 0)
+            MinusRandom = -1 + rand()%(1-(-1)+1);
+        fprintf(f, "%d ", (0 + rand()%(10000 - 0 + 1)) * MinusRandom); //[1;10000]
     }
         
     fclose(f);
